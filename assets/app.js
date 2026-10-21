@@ -29,8 +29,18 @@
       c.addEventListener('mouseleave', function(){ c._want = false; c.classList.remove('on'); v.pause(); });
     }
   });
-  // 1) scarica i video quando mancano ~2 schermate
-  var pre = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { load(e.target); pre.unobserve(e.target); } }); }, {rootMargin:'2600px 0px'});
+  // 1) scarica i video quando mancano ~3 schermate, uno alla volta in ordine di pagina (così il primo è pronto prima)
+  var q = [], busy = null;
+  function next(){
+    if (busy) return;
+    q = q.filter(function(v){ return !v.getAttribute('src'); });
+    q.sort(function(a,b){ return a.getBoundingClientRect().top - b.getBoundingClientRect().top; });
+    var v = q.shift(); if (!v) return;
+    busy = v; load(v);
+    var done = function(){ if (busy !== v) return; busy = null; next(); };
+    v.addEventListener('canplaythrough', done, {once:true}); v.addEventListener('error', done, {once:true}); setTimeout(done, 5000);
+  }
+  var pre = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { q.push(e.target); pre.unobserve(e.target); } }); next(); }, {rootMargin:'2600px 0px'});
   $$('video[data-src]').forEach(function(v){ pre.observe(v); });
   // 2) li avvia mezza schermata prima che entrino, li ferma quando sono lontani
   var vio = new IntersectionObserver(function(es){ es.forEach(function(e){
