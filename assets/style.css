@@ -675,3 +675,9 @@ a.cc:hover{transform:translateY(-3px);box-shadow:var(--sh)}
 .ig-sec .help-t>p{color:var(--ink-2)}
 .ig-sec .kick{color:var(--ottone-ink)}
 .ig-sec .ig-card{background:#fff;border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(40,30,15,.35)}
+/* scorrimento veloce: niente buchi bianchi o neri */
+.js [data-r]{transform:translateY(18px)}
+.pillar,.out-card{background-color:#2a2620}
+.ph img,.gph img,.pillar img,.out-card img{backface-visibility:hidden}
+video{background-color:#2a2620}
+.pillar video,.out-card video{transition:opacity .45s ease}

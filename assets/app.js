@@ -14,18 +14,42 @@
   burger.addEventListener('click', function(){ var o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.style.overflow = o ? 'hidden' : ''; });
   $$('a', nav).forEach(function(a){ a.addEventListener('click', function(){ nav.classList.remove('open'); burger.setAttribute('aria-expanded', false); document.body.style.overflow=''; }); });
 
-  /* video: si caricano solo quando servono */
-  function vplay(v){ if (!v.src && v.dataset.src) v.src = v.dataset.src; var p = v.play(); if (p) p.catch(function(){}); }
+  /* video: si caricano solo quando servono.
+     La card mostra il video solo quando il primo fotogramma è pronto (niente riquadri neri),
+     e parte solo se resta visibile un attimo (scorrendo veloce non se ne avviano dieci insieme). */
+  function vplay(v){ if (!v.src && v.dataset.src) { v.preload = 'auto'; v.src = v.dataset.src; } var p = v.play(); if (p) p.catch(function(){}); }
+  function card(v){ return v.closest('[data-hover-video]'); }
+  $$('video').forEach(function(v){
+    if (v.poster) v.style.background = 'center / cover no-repeat url("' + v.poster + '")';
+    v.addEventListener('playing', function(){ var c = card(v); if (c && c._want) c.classList.add('on'); });
+  });
   $$('[data-hover-video]').forEach(function(c){
     var v = $('video', c); if (!v) return;
-    if (!touch) { c.addEventListener('mouseenter', function(){ vplay(v); c.classList.add('on'); }); c.addEventListener('mouseleave', function(){ v.pause(); c.classList.remove('on'); }); }
+    if (!touch) {
+      c.addEventListener('mouseenter', function(){ c._want = true; vplay(v); if (v.readyState > 2 && !v.paused) c.classList.add('on'); });
+      c.addEventListener('mouseleave', function(){ c._want = false; c.classList.remove('on'); setTimeout(function(){ if (!c._want) v.pause(); }, 600); });
+    }
   });
   var vio = new IntersectionObserver(function(es){ es.forEach(function(e){
     var el = e.target, v = el.tagName === 'VIDEO' ? el : $('video', el);
-    if (e.isIntersecting) { if (!reduce) vplay(v); el.classList.add('on'); } else { v.pause(); el.classList.remove('on'); }
-  }); }, {rootMargin:'-30% 0px -30% 0px'});
+    clearTimeout(el._t);
+    if (e.isIntersecting) {
+      if (reduce) return;
+      el._t = setTimeout(function(){ el._want = true; vplay(v); if (el.tagName === 'VIDEO' || (v.readyState > 2 && !v.paused)) el.classList.add('on'); }, 180);
+    } else {
+      el._want = false; el.classList.remove('on');
+      el._t = setTimeout(function(){ if (!el._want) v.pause(); }, 600);
+    }
+  }); }, {rootMargin:'-25% 0px -25% 0px'});
   $$('video[data-auto]').forEach(function(v){ vio.observe(v); });
   if (touch) $$('[data-hover-video]').forEach(function(c){ vio.observe(c); });
+  // i video vicini allo schermo preparano il primo fotogramma in anticipo
+  var pre = new IntersectionObserver(function(es){ es.forEach(function(e){
+    if (!e.isIntersecting) return; var v = e.target;
+    if (!v.src && v.dataset.src) { v.preload = 'metadata'; v.src = v.dataset.src; }
+    pre.unobserve(v);
+  }); }, {rootMargin:'400px 0px'});
+  $$('video[data-src]').forEach(function(v){ if (touch || v.hasAttribute('data-auto')) pre.observe(v); });
 
   // hero: video orizzontale su computer, verticale su telefono
   $$('video[data-desk]').forEach(function(v){
@@ -34,6 +58,9 @@
   });
   // video di sfondo: avvio esplicito (alcuni browser ignorano autoplay)
   $$('video[autoplay]').forEach(function(v){ v.muted = true; if (reduce) { v.removeAttribute('autoplay'); v.pause(); return; } var p = v.play(); if (p) p.catch(function(){}); });
+  // e si fermano quando escono dallo schermo (meno video insieme = scorrimento più fluido)
+  var hio = new IntersectionObserver(function(es){ es.forEach(function(e){ var v = e.target; if (reduce) return; if (e.isIntersecting) { var p = v.play(); if (p) p.catch(function(){}); } else v.pause(); }); });
+  $$('video[autoplay]').forEach(function(v){ hio.observe(v); });
 
   /* lettore showreel */
   $$('.player').forEach(function(pl){
@@ -146,9 +173,11 @@
     gsap.registerPlugin(ScrollTrigger);
     gsap.to('h1 .line>span', {y:0, duration:1.2, stagger:.1, ease:'expo.out', delay:.1});
     gsap.from('[data-hero]', {opacity:0, y:28, duration:1, stagger:.1, ease:'expo.out', delay:.4});
-    $$('[data-r]').forEach(function(el){ gsap.to(el, {opacity:1, y:0, duration:1, ease:'expo.out', scrollTrigger:{trigger:el, start:'top 88%', once:true}}); });
+    $$('[data-r]').forEach(function(el){ gsap.to(el, {opacity:1, y:0, duration:.7, ease:'power3.out', scrollTrigger:{trigger:el, start:'top 96%', once:true}}); });
+    // se si salta oltre (scorrimento veloce, ancore) gli elementi già passati compaiono subito
+    ScrollTrigger.addEventListener('refresh', function(){ $$('[data-r]').forEach(function(el){ if (el.getBoundingClientRect().bottom < 0) gsap.set(el, {opacity:1, y:0}); }); });
     $$('[data-clip]').forEach(function(el){ gsap.to(el, {clipPath:'inset(0% 0% 0% 0% round 28px)', duration:1.4, ease:'expo.out', scrollTrigger:{trigger:el, start:'top 85%', once:true}}); });
-    $$('[data-par]').forEach(function(el){ gsap.to(el, {yPercent:parseFloat(el.dataset.par), ease:'none', scrollTrigger:{trigger:el.parentNode, start:'top bottom', end:'bottom top', scrub:true}}); });
+    if (!touch) $$('[data-par]').forEach(function(el){ gsap.to(el, {yPercent:parseFloat(el.dataset.par), ease:'none', scrollTrigger:{trigger:el.parentNode, start:'top bottom', end:'bottom top', scrub:true}}); });
     var sf = $('#stepsFill');
     if (sf) gsap.to(sf, {scaleX:1, ease:'none', scrollTrigger:{trigger:'#steps', start:'top 75%', end:'bottom 55%', scrub:true,
       onUpdate:function(s){ $$('.step').forEach(function(st,i){ st.classList.toggle('lit', s.progress >= i/3 - .02); }); }}});
