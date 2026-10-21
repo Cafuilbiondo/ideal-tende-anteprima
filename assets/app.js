@@ -30,7 +30,7 @@
     }
   });
   // 1) scarica i video quando mancano ~2 schermate
-  var pre = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { load(e.target); pre.unobserve(e.target); } }); }, {rootMargin:'1600px 0px'});
+  var pre = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { load(e.target); pre.unobserve(e.target); } }); }, {rootMargin:'2600px 0px'});
   $$('video[data-src]').forEach(function(v){ pre.observe(v); });
   // 2) li avvia mezza schermata prima che entrino, li ferma quando sono lontani
   var vio = new IntersectionObserver(function(es){ es.forEach(function(e){
