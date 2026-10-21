@@ -680,4 +680,4 @@ a.cc:hover{transform:translateY(-3px);box-shadow:var(--sh)}
 .pillar,.out-card{background-color:#2a2620}
 .ph img,.gph img,.pillar img,.out-card img{backface-visibility:hidden}
 video{background-color:#2a2620}
-.pillar video,.out-card video{transition:opacity .45s ease}
+.pillar video,.out-card video{transition:opacity .25s ease}

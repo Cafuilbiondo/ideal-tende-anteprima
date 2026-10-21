@@ -14,42 +14,32 @@
   burger.addEventListener('click', function(){ var o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.style.overflow = o ? 'hidden' : ''; });
   $$('a', nav).forEach(function(a){ a.addEventListener('click', function(){ nav.classList.remove('open'); burger.setAttribute('aria-expanded', false); document.body.style.overflow=''; }); });
 
-  /* video: si caricano solo quando servono.
-     La card mostra il video solo quando il primo fotogramma è pronto (niente riquadri neri),
-     e parte solo se resta visibile un attimo (scorrendo veloce non se ne avviano dieci insieme). */
-  function vplay(v){ if (!v.src && v.dataset.src) { v.preload = 'auto'; v.src = v.dataset.src; } var p = v.play(); if (p) p.catch(function(){}); }
-  function card(v){ return v.closest('[data-hover-video]'); }
+  /* video: si scaricano in anticipo e partono prima di entrare nello schermo,
+     così quando arrivi sono già in movimento (piano o veloce). Fuori schermo si fermano. */
+  function load(v){ if (!v.getAttribute('src') && v.dataset.src) { v.preload = 'auto'; v.src = v.dataset.src; v.load(); } }
+  function vplay(v){ load(v); var p = v.play(); if (p) p.catch(function(){}); }
   $$('video').forEach(function(v){
     if (v.poster) v.style.background = 'center / cover no-repeat url("' + v.poster + '")';
-    v.addEventListener('playing', function(){ var c = card(v); if (c && c._want) c.classList.add('on'); });
+    v.addEventListener('loadeddata', function(){ var c = v.closest('[data-hover-video]'); if (c && c._want) c.classList.add('on'); });
   });
   $$('[data-hover-video]').forEach(function(c){
     var v = $('video', c); if (!v) return;
     if (!touch) {
-      c.addEventListener('mouseenter', function(){ c._want = true; vplay(v); if (v.readyState > 2 && !v.paused) c.classList.add('on'); });
-      c.addEventListener('mouseleave', function(){ c._want = false; c.classList.remove('on'); setTimeout(function(){ if (!c._want) v.pause(); }, 600); });
+      c.addEventListener('mouseenter', function(){ c._want = true; vplay(v); if (v.readyState >= 2) c.classList.add('on'); });
+      c.addEventListener('mouseleave', function(){ c._want = false; c.classList.remove('on'); v.pause(); });
     }
   });
+  // 1) scarica i video quando mancano ~2 schermate
+  var pre = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { load(e.target); pre.unobserve(e.target); } }); }, {rootMargin:'1600px 0px'});
+  $$('video[data-src]').forEach(function(v){ pre.observe(v); });
+  // 2) li avvia mezza schermata prima che entrino, li ferma quando sono lontani
   var vio = new IntersectionObserver(function(es){ es.forEach(function(e){
     var el = e.target, v = el.tagName === 'VIDEO' ? el : $('video', el);
-    clearTimeout(el._t);
-    if (e.isIntersecting) {
-      if (reduce) return;
-      el._t = setTimeout(function(){ el._want = true; vplay(v); if (el.tagName === 'VIDEO' || (v.readyState > 2 && !v.paused)) el.classList.add('on'); }, 180);
-    } else {
-      el._want = false; el.classList.remove('on');
-      el._t = setTimeout(function(){ if (!el._want) v.pause(); }, 600);
-    }
-  }); }, {rootMargin:'-25% 0px -25% 0px'});
+    if (e.isIntersecting) { if (reduce) return; el._want = true; vplay(v); if (el.tagName === 'VIDEO' || v.readyState >= 2) el.classList.add('on'); }
+    else { el._want = false; v.pause(); if (el.tagName !== 'VIDEO') el.classList.remove('on'); }
+  }); }, {rootMargin:'400px 0px 400px 0px'});
   $$('video[data-auto]').forEach(function(v){ vio.observe(v); });
   if (touch) $$('[data-hover-video]').forEach(function(c){ vio.observe(c); });
-  // i video vicini allo schermo preparano il primo fotogramma in anticipo
-  var pre = new IntersectionObserver(function(es){ es.forEach(function(e){
-    if (!e.isIntersecting) return; var v = e.target;
-    if (!v.src && v.dataset.src) { v.preload = 'metadata'; v.src = v.dataset.src; }
-    pre.unobserve(v);
-  }); }, {rootMargin:'400px 0px'});
-  $$('video[data-src]').forEach(function(v){ if (touch || v.hasAttribute('data-auto')) pre.observe(v); });
 
   // hero: video orizzontale su computer, verticale su telefono
   $$('video[data-desk]').forEach(function(v){
@@ -59,7 +49,7 @@
   // video di sfondo: avvio esplicito (alcuni browser ignorano autoplay)
   $$('video[autoplay]').forEach(function(v){ v.muted = true; if (reduce) { v.removeAttribute('autoplay'); v.pause(); return; } var p = v.play(); if (p) p.catch(function(){}); });
   // e si fermano quando escono dallo schermo (meno video insieme = scorrimento più fluido)
-  var hio = new IntersectionObserver(function(es){ es.forEach(function(e){ var v = e.target; if (reduce) return; if (e.isIntersecting) { var p = v.play(); if (p) p.catch(function(){}); } else v.pause(); }); });
+  var hio = new IntersectionObserver(function(es){ es.forEach(function(e){ var v = e.target; if (reduce) return; if (e.isIntersecting) { var p = v.play(); if (p) p.catch(function(){}); } else v.pause(); }); }, {rootMargin:'300px 0px'});
   $$('video[autoplay]').forEach(function(v){ hio.observe(v); });
 
   /* lettore showreel */
