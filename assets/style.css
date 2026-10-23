@@ -514,6 +514,7 @@ a.cc:hover{transform:translateY(-3px);box-shadow:var(--sh)}
 @media (max-width:640px){
   .split{gap:26px}
   .split-media{aspect-ratio:16/11}
+  .split-media.tall{aspect-ratio:4/5}
   .duo{height:250px}
   .checks{gap:10px;margin:18px 0 22px}
   .checks li{gap:10px;font-size:15px}
