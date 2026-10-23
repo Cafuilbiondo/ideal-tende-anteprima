@@ -61,10 +61,10 @@ p+p{margin-top:14px}
 .hdr.solid::before{opacity:1}
 .hdr .wrap{display:flex;align-items:center;justify-content:space-between;height:var(--hdr);gap:20px}
 .logo{display:flex;align-items:center;gap:12px;color:var(--lino)}
-.logo img{height:58px;width:auto;display:block}
+.logo img{height:72px;width:auto;display:block}
 .hdr .logo img{transition:height .45s var(--ease)}
-.hdr.solid .logo img{height:50px}
-@media (max-width:640px){.logo img{height:46px}}
+.hdr.solid .logo img{height:60px}
+@media (max-width:640px){.logo img{height:56px}}
 .logo b{font-family:var(--f-d);font-weight:400;font-size:30px;line-height:1}
 .logo small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:var(--ottone);margin-top:5px}
 .nav{display:flex;align-items:center;gap:2px;list-style:none}
@@ -623,7 +623,7 @@ a.cc:hover{transform:translateY(-3px);box-shadow:var(--sh)}
 .sb-btn{flex:none;padding:11px 22px}
 
 .ftr{padding:44px 0 22px;font-size:14.5px}
-.ftr .logo img{height:44px;width:auto}
+.ftr .logo img{height:60px;width:auto}
 .f-grid{gap:28px}
 .f-about{margin-top:12px;font-size:14px;line-height:1.55}
 .ftr h4{font-size:11px;margin-bottom:12px}
@@ -651,7 +651,7 @@ a.cc:hover{transform:translateY(-3px);box-shadow:var(--sh)}
   .sb-btn{padding:9px 18px;font-size:14px}
 
   .ftr{padding:30px 0 16px;font-size:13px;line-height:1.45}
-  .ftr .logo img{height:34px}
+  .ftr .logo img{height:48px}
   .f-about{display:none}
   .f-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:18px 16px!important}
   .f-grid>div:first-child,.f-grid>div:last-child{grid-column:1/-1}

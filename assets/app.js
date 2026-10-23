@@ -1,6 +1,6 @@
 /* Ideal Tende — script comune */
 (function(){
-  var WA = '393803147697';
+  var WA = '393896494986';
   var $ = function(s,c){return (c||document).querySelector(s)}, $$ = function(s,c){return [].slice.call((c||document).querySelectorAll(s))};
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var touch = matchMedia('(hover: none)').matches;
