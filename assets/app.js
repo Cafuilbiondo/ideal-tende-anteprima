@@ -198,6 +198,7 @@
 (function(){
   if(!window.matchMedia('(max-width:640px)').matches) return;
   document.querySelectorAll('.split > [data-r], .split > div:not(.split-media):not(.duo)').forEach(function(box){
+    if(box.hasAttribute('data-full')) return;
     var ps=[].slice.call(box.querySelectorAll(':scope > p')).filter(function(p){return !p.classList.contains('lead')||true;});
     if(ps.length<2) return;
     ps.slice(1).forEach(function(p){p.classList.add('more-p');});
