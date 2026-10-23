@@ -11,8 +11,8 @@
   var onS = function(){ hdr.classList.toggle('solid', scrollY > 30); };
   addEventListener('scroll', onS, {passive:true}); onS();
   var burger = $('#burger'), nav = $('#nav');
-  burger.addEventListener('click', function(){ var o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.style.overflow = o ? 'hidden' : ''; });
-  $$('a', nav).forEach(function(a){ a.addEventListener('click', function(){ nav.classList.remove('open'); burger.setAttribute('aria-expanded', false); document.body.style.overflow=''; }); });
+  burger.addEventListener('click', function(){ var o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.style.overflow = o ? 'hidden' : ''; document.body.classList.toggle('menu-open', o); });
+  $$('a', nav).forEach(function(a){ a.addEventListener('click', function(){ nav.classList.remove('open'); burger.setAttribute('aria-expanded', false); document.body.style.overflow=''; document.body.classList.remove('menu-open'); }); });
 
   /* video: si scaricano in anticipo e partono prima di entrare nello schermo,
      così quando arrivi sono già in movimento (piano o veloce). Fuori schermo si fermano. */
