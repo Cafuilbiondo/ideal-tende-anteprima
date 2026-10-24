@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261024c">
+<link rel="stylesheet" href="assets/style.css?v=20261024d">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Ideal Tende di De Martino Teresa","description":"Tendaggi d'arredo, tende tecniche, tappezzeria e soluzioni outdoor su misura a Trinitapoli.","telephone":"+390883631605","email":"idealterri2367@libero.it","foundingDate":"1998","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:00","closes":"13:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"16:00","closes":"21:00"}],"vatID":"IT02377820713","address":{"@type":"PostalAddress","streetAddress":"Corso Giuseppe Garibaldi 92","addressLocality":"Trinitapoli","postalCode":"76015","addressRegion":"BT","addressCountry":"IT"},"areaServed":["Trinitapoli","San Ferdinando di Puglia","Margherita di Savoia","Barletta","Cerignola",{"@type":"Country","name":"Italia"}]}
@@ -68,14 +68,14 @@
 <section class="sec dark" id="video">
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:40px"><div data-r><span class="kick">Il video</span><h2>Guarda <span class="it">come lavoriamo</span>.</h2><p class="lead">Dentro casa e fuori: tendaggi, tende tecniche, tappezzeria, pergole e vetrate, dai nostri cantieri.</p></div></div>
-    <!-- un solo lettore: 16:9 su computer, 9:16 su telefono (sorgente scelta da app.js) -->
+    <!-- un solo lettore e un solo video 16:9, anche su telefono: in verticale si vede più piccolo, al play va a schermo intero e si gira il telefono -->
     <div class="player" data-r role="button" tabindex="0" aria-label="Riproduci il video"
-         data-desk="assets/video/showreel-16x9.mp4" data-mob="assets/video/reel-9x16.mp4">
+         data-desk="assets/video/showreel-16x9.mp4?v=2">
       <video playsinline controls preload="none"></video>
-      <div class="poster"><picture><source media="(max-width:768px)" srcset="assets/video/reel-poster.jpg"><img src="assets/video/showreel-poster.jpg" alt="" loading="lazy"></picture></div>
+      <div class="poster"><picture><img src="assets/video/showreel-poster.jpg?v=2" alt="" loading="lazy"></picture></div>
       <span class="big-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
     </div>
-    <div class="vfoot"><span>Accendi l'audio per la musica.</span><a href="https://wa.me/393896494986" target="_blank" rel="noopener">Ti piace un lavoro? Scrivici su WhatsApp →</a></div>
+    <div class="vfoot"><span>Accendi l'audio per la musica.<span class="only-m"> Gira il telefono per vederlo a tutto schermo.</span></span><a href="https://wa.me/393896494986" target="_blank" rel="noopener">Ti piace un lavoro? Scrivici su WhatsApp →</a></div>
   </div>
 </section>
 
@@ -125,6 +125,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="assets/app.js?v=20261024c" defer></script>
+<script src="assets/app.js?v=20261024d" defer></script>
 </body>
 </html>

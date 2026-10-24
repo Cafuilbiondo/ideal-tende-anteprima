@@ -526,7 +526,9 @@ a.cc:hover{transform:translateY(-3px);box-shadow:var(--sh)}
 
 /* telefono: pagine compatte e funzionali */
 .more-btn{display:none}
+.only-m{display:none}
 @media (max-width:640px){
+  .only-m{display:inline}
   /* testate delle pagine su telefono: foto intera in alto (poco tagliata), titolo sotto */
   .phero{display:block;min-height:0}
   .phero>img{position:relative;inset:auto;height:calc(var(--hdr) + 64vw);object-position:var(--hero-pos,50% 50%)}

@@ -69,13 +69,26 @@
     var mq = matchMedia('(max-width:768px)');
     var pick = function(){
       if (!pl.dataset.desk || pl.classList.contains('playing')) return;
-      var src = mq.matches ? pl.dataset.mob : pl.dataset.desk;
-      pl.classList.toggle('is-vert', mq.matches);
+      var vert = mq.matches && !!pl.dataset.mob;
+      var src = vert ? pl.dataset.mob : pl.dataset.desk;
+      pl.classList.toggle('is-vert', vert);
       if (v.getAttribute('src') !== src) { v.setAttribute('src', src); v.preload = 'metadata'; }
     };
     pick();
     if (mq.addEventListener) mq.addEventListener('change', pick);
-    var go = function(e){ if (pl.classList.contains('playing')) return; if (e) e.preventDefault(); pl.classList.add('playing'); v.preload='auto'; var p = v.play(); if (p) p.catch(function(){}); };
+    // telefono: al play il video va a schermo intero; girando il telefono si vede grande
+    var full = function(){
+      if (!mq.matches) return;
+      try {
+        var r = v.requestFullscreen || v.webkitRequestFullscreen;
+        if (r && (document.fullscreenEnabled || document.webkitFullscreenEnabled)) {
+          var q = r.call(v);
+          if (q && q.then) q.then(function(){ if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function(){}); }).catch(function(){});
+        } else if (v.webkitEnterFullscreen) { v.webkitEnterFullscreen(); }
+      } catch (err) {}
+    };
+    document.addEventListener('fullscreenchange', function(){ if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) { try { screen.orientation.unlock(); } catch (err) {} } });
+    var go = function(e){ if (pl.classList.contains('playing')) return; if (e) e.preventDefault(); pl.classList.add('playing'); v.preload='auto'; var p = v.play(); if (p) p.catch(function(){}); full(); };
     pl.addEventListener('click', go);
     pl.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' ') go(e); });
     // a fine video torna la copertina
